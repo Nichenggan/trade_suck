@@ -55,4 +55,6 @@ user_data/*.json.bak
 # If you later create a file just for API keys, make sure to ignore it:
 secret*.json
 # *config_private.json
-
+# Backtest and Hyperopt results
+user_data/backtest_results/
+user_data/hyperopt_results/
