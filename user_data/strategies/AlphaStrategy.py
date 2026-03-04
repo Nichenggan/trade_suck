@@ -1,68 +1,42 @@
 import numpy as np
 import pandas as pd
 from freqtrade.strategy import IStrategy
-import talib.abstract as ta
-import freqtrade.vendor.qtpylib.indicators as qtpylib
 from datetime import datetime
-
 
 class AlphaStrategy(IStrategy):
     INTERFACE_VERSION = 3
-    timeframe = '5m'
+    timeframe = '1m'
     can_short = True
     
-    # 50% hard stop loss
-    stoploss = -0.5
+    # 5% hard stop loss
+    stoploss = -0.05
     trailing_stop = False
     
+    # 5% take profit immediately
     minimal_roi = {
-        "0": 0.1,     # Take profit at 10%
-        "30": 0.05,   # Take profit at 5% after 30 mins
-        "60": 0.01    # Take profit at 1% after 60 mins
+        "0": 0.05
     }
 
     def leverage(self, pair: str, current_time: datetime, current_rate: float,
                  proposed_leverage: float, max_leverage: float, entry_tag: str,
                  side: str, **kwargs) -> float:
         """
-        Hardcoded leverage of 50.0 for OKX Futures
+        Hardcoded leverage of 10.0 for OKX Futures
         """
-        return 50.0
+        return 10.0
 
     def populate_indicators(self, dataframe: pd.DataFrame, metadata: dict) -> pd.DataFrame:
-        dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
+        # No indicators needed for immediate buy
         return dataframe
 
     def populate_entry_trend(self, dataframe: pd.DataFrame, metadata: dict) -> pd.DataFrame:
+        # Always trigger a long entry
         dataframe.loc[
-            (
-                (qtpylib.crossed_below(dataframe['rsi'], 30)) &
-                (dataframe['volume'] > 0)
-            ),
-            ['enter_long', 'enter_tag']] = (1, 'rsi_cross_under')
-            
-        dataframe.loc[
-            (
-                (qtpylib.crossed_above(dataframe['rsi'], 70)) &
-                (dataframe['volume'] > 0)
-            ),
-            ['enter_short', 'enter_tag']] = (1, 'rsi_cross_over')
+            (dataframe['volume'] > 0),
+            ['enter_long', 'enter_tag']] = (1, 'immediate_buy')
 
         return dataframe
 
     def populate_exit_trend(self, dataframe: pd.DataFrame, metadata: dict) -> pd.DataFrame:
-        dataframe.loc[
-            (
-                (qtpylib.crossed_above(dataframe['rsi'], 70)) &
-                (dataframe['volume'] > 0)
-            ),
-            ['exit_long', 'exit_tag']] = (1, 'rsi_overbought')
-            
-        dataframe.loc[
-            (
-                (qtpylib.crossed_below(dataframe['rsi'], 30)) &
-                (dataframe['volume'] > 0)
-            ),
-            ['exit_short', 'exit_tag']] = (1, 'rsi_oversold')
-
+        # Exits will be handled purely by ROI (5%) and Stoploss (5%)
         return dataframe
