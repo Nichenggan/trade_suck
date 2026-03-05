@@ -1,5 +1,5 @@
 {
-    "max_open_trades": 9,
+    "max_open_trades": 10,
     "stake_currency": "USDT",
     "stake_amount": "unlimited",
     "tradable_balance_ratio": 0.99,
@@ -53,13 +53,7 @@
         "pair_whitelist": [
             "BTC/USDT:USDT",
             "ETH/USDT:USDT",
-            "SOL/USDT:USDT",
-            "DOGE/USDT:USDT",
-            "XRP/USDT:USDT",
-            "AVAX/USDT:USDT",
-            "LINK/USDT:USDT",
-            "ADA/USDT:USDT",
-            "PEPE/USDT:USDT"
+            "SOL/USDT:USDT"
         ],
         "pair_blacklist": []
     },

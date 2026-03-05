@@ -58,3 +58,8 @@ secret*.json
 # Backtest and Hyperopt results
 user_data/backtest_results/
 user_data/hyperopt_results/
+*.sqlite.backup
+.last_results.json
+
+
+

@@ -9,11 +9,13 @@ class AlphaStrategy(IStrategy):
     timeframe = '5m'
     can_short = True
     startup_candle_count = 200
-    stake_percentage = 0.1
+    # 仓位管理参数
+    stake_percentage = 0.10      # 账户总额的 10%
+    min_stake_amount = 100.0     # 最低开仓金额 100 USDT
 
     # --- 策略核心参数 ---
     # 定义杠杆参数，默认5倍，可通过 Hyperopt 优化 (范围 1-10)
-    leverage_num = IntParameter(1, 20, default=15, space='buy', optimize=True)
+    leverage_num = IntParameter(1, 20, default=10, space='buy', optimize=True)
     
 
 
@@ -43,16 +45,21 @@ class AlphaStrategy(IStrategy):
                             proposed_stake: float, min_stake: float, max_stake: float,
                             leverage: float, entry_tag: str, side: str, **kwargs) -> float:
         """
-        仓位管理：每次开仓占当前账户总额 (Total Wallet) 的 10%。
-        复利模式开启。
+        仓位管理：每次开仓占当前账户总额的 10%，但最低不少于 100 USDT。
         """
-        return self.wallets.get_total_stake_amount() * self.stake_percentage
+        calculated_stake = self.wallets.get_total_stake_amount() * self.stake_percentage
+        
+        # 确保不低于 100U，且不超过账户当前可用最大倍数限制
+        final_stake = max(calculated_stake, self.min_stake_amount)
+        
+        # 如果当前可用金额不足 100U，Freqtrade 会自动处理或报错，这里返回 calculated 值
+        return final_stake
 
     def leverage(self, pair: str, current_time: datetime, current_rate: float,
                  proposed_leverage: float, max_leverage: float, entry_tag: str,
                  side: str, **kwargs) -> float:
         """
-        使用参数化杠杆，默认 50 倍
+        使用参数化杠杆
         """
         return float(self.leverage_num.value)
 
