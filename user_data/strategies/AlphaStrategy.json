@@ -2,31 +2,32 @@
   "strategy_name": "AlphaStrategy",
   "params": {
     "max_open_trades": {
-      "max_open_trades": 9
+      "max_open_trades": 3
     },
     "buy": {
-      "buy_rsi": 39,
-      "leverage_num": 3
+      "buy_rsi": 42,
+      "leverage_long": 2,
+      "leverage_short": 4
     },
     "sell": {
-      "sell_rsi": 60
+      "sell_rsi": 67
     },
     "roi": {
-      "0": 0.162,
-      "40": 0.052,
-      "68": 0.039,
-      "179": 0
+      "0": 0.142,
+      "25": 0.043,
+      "37": 0.012,
+      "145": 0
     },
     "stoploss": {
-      "stoploss": -0.287
+      "stoploss": -0.277
     },
     "trailing": {
       "trailing_stop": true,
-      "trailing_stop_positive": 0.045,
-      "trailing_stop_positive_offset": 0.097,
+      "trailing_stop_positive": 0.245,
+      "trailing_stop_positive_offset": 0.336,
       "trailing_only_offset_is_reached": true
     }
   },
   "ft_stratparam_v": 1,
-  "export_time": "2026-03-04 15:48:12.662885+00:00"
+  "export_time": "2026-03-06 12:09:22.568873+00:00"
 }
